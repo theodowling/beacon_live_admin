@@ -119,8 +119,8 @@ defmodule Beacon.LiveAdmin.PageEditorLive.Revisions do
         </li>
         <li>
           <h4 class="text-gray-600">Template</h4>
-          <div class="w-full mt-2">
-            <div class="py-6 rounded-[1.25rem] bg-[#0D1829] [&_.monaco-editor-background]:!bg-[#0D1829] [&_.margin]:!bg-[#0D1829]">
+          <div class="w-full mt-2 flex relative">
+            <div id={"lme-template-#{@event.snapshot.id}"} class="py-6 w-full rounded-[1.25rem] bg-[#0D1829] [&_.monaco-editor-background]:!bg-[#0D1829] [&_.margin]:!bg-[#0D1829]">
               <LiveMonacoEditor.code_editor
                 path={"template-" <> @event.snapshot.id}
                 class="col-span-full lg:col-span-2 max-h-60"
@@ -128,18 +128,43 @@ defmodule Beacon.LiveAdmin.PageEditorLive.Revisions do
                 opts={Map.merge(LiveMonacoEditor.default_opts(), %{"language" => language(@event.snapshot.page.format), "readOnly" => "true"})}
               />
             </div>
+            <div class="flex">
+              <button phx-click={JS.dispatch("beacon_admin:clipcopy", to: "#lme-template-#{@event.snapshot.id}", detail: @event.snapshot.page.template)}>
+                <.icon name="hero-clipboard-document-check-solid" class="h-5 w-5" />
+              </button>
+            </div>
+            <div
+              id={"lme-template-#{@event.snapshot.id}-copy-to-clipboard-result"}
+              class="absolute right-0 -top-10 whitespace-nowrap text-green-500 text-sm font-medium p-3 shadow-md rounded-lg bg-white transition-all duration-300 opacity-0 invisible"
+              phx-update="ignore"
+            >
+              Copied to clipboard
+            </div>
           </div>
         </li>
+
         <li>
           <h4 class="text-gray-600">Schema</h4>
-          <div class="w-full mt-2">
-            <div class="py-6 rounded-[1.25rem] bg-[#0D1829] [&_.monaco-editor-background]:!bg-[#0D1829] [&_.margin]:!bg-[#0D1829]">
+          <div class="w-full mt-2 flex relative">
+            <div id={"lme-schema-#{@event.snapshot.id}"} class="py-6 w-full rounded-[1.25rem] bg-[#0D1829] [&_.monaco-editor-background]:!bg-[#0D1829] [&_.margin]:!bg-[#0D1829]">
               <LiveMonacoEditor.code_editor
                 path={"schema-" <> @event.snapshot.id}
                 class="col-span-full lg:col-span-2 max-h-60"
                 value={Jason.encode!(@event.snapshot.page.raw_schema, pretty: true)}
                 opts={Map.merge(LiveMonacoEditor.default_opts(), %{"language" => "json", "readOnly" => "true"})}
               />
+            </div>
+            <div class="flex">
+              <button phx-click={JS.dispatch("beacon_admin:clipcopy", to: "#lme-schema-#{@event.snapshot.id}", detail: "#{Jason.encode!(@event.snapshot.page.raw_schema)}")}>
+                <.icon name="hero-clipboard-document-check-solid" class="h-5 w-5" />
+              </button>
+            </div>
+            <div
+              id={"lme-schema-#{@event.snapshot.id}-copy-to-clipboard-result"}
+              class="absolute right-0 -top-10 whitespace-nowrap text-green-500 text-sm font-medium p-3 shadow-md rounded-lg bg-white transition-all duration-300 opacity-0 invisible"
+              phx-update="ignore"
+            >
+              Copied to clipboard
             </div>
           </div>
         </li>

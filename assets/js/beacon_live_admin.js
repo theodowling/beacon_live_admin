@@ -25,6 +25,8 @@ window.addEventListener("beacon_admin:clipcopy", (event) => {
   if ("clipboard" in navigator) {
     if (event.target.tagName === "INPUT") {
       txt = event.target.value;
+    } else if (event.detail) {
+      txt = event.detail;
     } else {
       txt = event.target.textContent;
     }
